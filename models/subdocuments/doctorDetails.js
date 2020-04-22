@@ -50,7 +50,7 @@ const schema = new mongoose.Schema({
     phone: Number,
     fee: {
         type: Number,
-        required: [true, 'Doctor must have fee'],
+        default: 5000
     },
     verified: {
         type: Boolean,
