@@ -1,12 +1,17 @@
 const mongoose = require('mongoose');
 const bycrypt = require('bcryptjs');
 const validator = require('validator').default;
+const slugify = require('slugify');
+const doctorDetails = require('./subdocuments/doctorDetails');
 
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'User must have a name']
+        required: [true, 'User must have a name'],
+        unique: true,
+        trim: true
     },
+    photo: String,
     email: {
         type: String,
         required: [true, 'User must have an email'],
@@ -18,6 +23,10 @@ const schema = new mongoose.Schema({
         type: String,
         enum: ['admin', 'user', 'doctor'],
         default: 'user'
+    },
+    city: {
+        type: String,
+        required: [true, 'User must belong to a city'],
     },
     password: {
         type: String,
@@ -47,7 +56,18 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: true,
         select: false
+    },
+    slug: String,
+    doctorDetails: doctorDetails,
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
+
+schema.pre('save', function (next) {
+    this.slug = slugify(this.name, {lower: true});
+    next();
 });
 
 schema.pre('save', async function (next) {
