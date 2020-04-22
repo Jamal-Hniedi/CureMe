@@ -1,0 +1,1 @@
+Sat Apr 17 2020 :: MongoError: E11000 duplicate key error collection: CureMe.users index: email_1 dup key: { email: "admin@cureme.com" }
