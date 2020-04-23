@@ -1,6 +1,7 @@
 const {promisify} = require('util');
 const catchAsync = require('./../utils/catchAsync');
 const User = require('./../models/userModel');
+const Doctor = require('./../models/doctorModel');
 const AppError = require('./../utils/AppError');
 const jwt = require('jsonwebtoken');
 
@@ -26,8 +27,9 @@ exports.isAuth = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         const userRole = req.user.role;
-        if (roles.includes(userRole)) return next();
-        next(new AppError('You don\'t have permission to perform this action!', 403))
+        console.log(userRole);
+        if (!roles.includes(userRole)) return next(new AppError('You don\'t have permission to perform this action!', 403));
+        next();
     };
 };
 
@@ -35,14 +37,33 @@ exports.signup = catchAsync(async (req, res) => {
     const user = await User.create({
         name: req.body.name,
         email: req.body.email,
+        city: req.body.city,
+        role: req.body.role !== 'admin' ? req.body.role : undefined,
         password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
+        passwordConfirm: req.body.passwordConfirm,
     });
-    const updatedUser = await updateUserRefreshTokens(req, res, user);
+    let finalUser;
+    if (req.body.role === 'doctor') {
+        const doc = await Doctor.create({
+            user: user._id,
+            specialty: req.body.specialty,
+            certificates: req.body.certificates,
+            presenceLocations: req.body.presenceLocations,
+            clinic: req.body.clinic,
+            phone: req.body.phone
+        });
+        finalUser = {
+            name: user.name,
+            email: user.email,
+            city: user.city,
+            ...doc.toJSON(),
+        };
+        await updateUserRefreshTokens(req, res, user);
+    } else finalUser = await updateUserRefreshTokens(req, res, user);
     res.status(200).json({
         status: 'success',
         data: {
-            user: updatedUser
+            user: finalUser
         }
     });
 });
@@ -73,6 +94,7 @@ exports.logout = catchAsync(async (req, res) => {
 
 exports.getAccessToken = catchAsync(async (req, res, next) => {
     const rToken = req.cookies.rToken;
+    if (!rToken) return next(new AppError('Cannot provide access token without refresh token', 400))
     const decoded = await verifyToken(rToken, 'R');
     const updatedRToken = generateToken({id: decoded.id}, 'R');
     const filter = {_id: decoded.id, rTokens: rToken};
@@ -83,7 +105,7 @@ exports.getAccessToken = catchAsync(async (req, res, next) => {
     const aTokenCookieOptions = generateCookieOptions(req, 'A');
     const rTokenCookieOptions = generateCookieOptions(req, 'R');
     res.cookie('aToken', aToken, aTokenCookieOptions);
-    res.cookie('rToken', rToken, rTokenCookieOptions);
+    res.cookie('rToken', updatedRToken, rTokenCookieOptions);
     res.status(200)
         .json({
             status: 'success'
@@ -95,9 +117,8 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     const rToken = req.cookies.rToken;
     const aDecoded = await verifyToken(aToken, 'A');
     const rDecoded = await verifyToken(rToken, 'R');
-    if (aToken && rToken && aDecoded && rDecoded && await User.findById(aDecoded.id)) {
+    if (aToken && rToken && aDecoded && rDecoded && await User.findById(aDecoded.id))
         return next(new AppError('You are already logged in!', 400));
-    }
     next();
 });
 
@@ -146,7 +167,7 @@ const generateToken = (payload, type) => {
 };
 
 const verifyToken = async (token, type) => {
-    console.log('token', token)
+    console.log(token);
     try {
         return await promisify(jwt.verify)(token, type === 'A' ? JWAT_SK : JWRT_SK);
     } catch (e) {

@@ -11,6 +11,9 @@ router.get('/get-access-token', authController.isLoggedIn, authController.getAcc
 
 router.use(authController.isAuth);
 
+
+router.get('/:id/adminize', authController.restrictTo('admin'), userController.adminize);
+
 router.route('/')
     .get(userController.getAllUsers);
 

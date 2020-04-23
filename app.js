@@ -13,6 +13,7 @@ const compression = require('compression');
 const cors = require('cors');
 
 const userRouter = require('./routes/userRoutes');
+const doctorRouter = require('./routes/doctorRoutes');
 
 const URL = '/api/v1';
 
@@ -68,6 +69,7 @@ app.use(compression());
 
 
 app.use(`${URL}/users`, userRouter);
+app.use(`${URL}/doctors`, doctorRouter);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));

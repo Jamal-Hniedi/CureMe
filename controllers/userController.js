@@ -7,3 +7,10 @@ exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
+exports.adminize = catchAsync(async (req, res) => {
+    await User.findByIdAndUpdate(req.params.id, {role: 'admin'})
+    res.status(200)
+        .json({
+            status: 'success'
+        })
+});

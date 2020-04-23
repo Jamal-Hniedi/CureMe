@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Doctor details must belong to a user!']
+    },
     specialty: {
         type: [String],
         required: [true, 'Please provide at least one specialty'],
@@ -17,9 +22,10 @@ const schema = new mongoose.Schema({
                 photo: String,
                 link: String
             }
-        ]
+        ],
+        default: undefined
     },
-    presence_locations: {
+    presenceLocations: {
         _id: false,
         type: [
             {at: String, from: String, to: String,}
@@ -56,6 +62,18 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, {_id: false});
+});
 
-module.exports = schema;
+/**
+ * Populate user details
+ */
+schema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'name email photo city'
+    });
+    next();
+});
+
+const Doctor = mongoose.model('Doctor', schema);
+module.exports = Doctor;

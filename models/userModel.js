@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bycrypt = require('bcryptjs');
 const validator = require('validator').default;
 const slugify = require('slugify');
-const doctorDetails = require('./subdocuments/doctorDetails');
+const doctorDetails = require('./doctorModel');
 
 const schema = new mongoose.Schema({
     name: {
@@ -57,13 +57,17 @@ const schema = new mongoose.Schema({
         default: true,
         select: false
     },
-    slug: String,
-    doctorDetails: doctorDetails,
+    slug: {
+        type: String,
+        index: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
+
+schema.index({slug: 1});
 
 schema.pre('save', function (next) {
     this.slug = slugify(this.name, {lower: true});
@@ -99,10 +103,10 @@ schema.methods.hasPasswordChangedAfter = function (JWTDate) {
 };
 
 schema.methods.deleteRefreshToken = function () {
+// TODO
 
 };
 
-// TODO
 
 const User = mongoose.model('User', schema);
 module.exports = User;
