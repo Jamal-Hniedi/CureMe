@@ -33,7 +33,6 @@ exports.isAuth = catchAsync(async (req, res, next) => {
     } else {
         const decoded = await verifyToken(aToken, 'A');
         if (!decoded) return next(new AppError('Invalid token. Please log in to get access!', 403));
-        console.log(decoded);
         const user = await User.findById(decoded.id);
         if (!user) return next(new AppError('User belonging to this token was not found!', 401));
         if (user.hasPasswordChangedAfter(decoded.iat)) return next(new AppError('Password has been changed recently! Please log in again!', 401));
@@ -45,7 +44,6 @@ exports.isAuth = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         const userRole = req.user.role;
-        console.log(userRole);
         if (!roles.includes(userRole)) return next(new AppError('You don\'t have permission to perform this action!', 403));
         next();
     };
@@ -185,7 +183,6 @@ const generateToken = (payload, type) => {
 };
 
 const verifyToken = async (token, type) => {
-    console.log(token);
     try {
         return await promisify(jwt.verify)(token, type === 'A' ? JWAT_SK : JWRT_SK);
     } catch (e) {
