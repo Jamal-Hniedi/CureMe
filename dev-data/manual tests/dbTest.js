@@ -11,7 +11,7 @@ const docObject = {
     password: 'test1234',
     passwordConfirm: 'test1234',
     role: 'doctor',
-    city: 'Ashitto',
+    city: 'Shit',
     doctorDetails: {
         presence_locations: [{at: 'my ass', from: '8:00', to: '2:00'}],
         specialty: ['Cardiologist', 'Cardiologist', 'Cardiologist'],

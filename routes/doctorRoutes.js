@@ -9,7 +9,7 @@ router.route('/')
 
 router.route('/:id')
     .get(doctorController.getDoctor)
-    .patch(doctorController.updateDoctor)
-    .delete(doctorController.deleteDoctor);
+    .patch(authController.isAuth, authController.restrictTo('admin'), doctorController.updateDoctor)
+    .delete(authController.isAuth, authController.restrictTo('admin'), doctorController.deleteDoctor);
 
 module.exports = router;

@@ -28,7 +28,7 @@ const schema = new mongoose.Schema({
     presenceLocations: {
         _id: false,
         type: [
-            {at: String, from: String, to: String,}
+            {at: String, day: String, from: String, to: String,}
         ],
         default: undefined
     },

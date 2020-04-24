@@ -14,13 +14,31 @@ const JWRT_EXPIRES_IN = process.env.JWRT_EXPIRES_IN;
 exports.isAuth = catchAsync(async (req, res, next) => {
     const aToken = req.cookies.aToken;
     const rToken = req.cookies.rToken;
-    if (!aToken || !rToken) return next(new AppError('Please log in to get access!', 401));
-    const decoded = await verifyToken(aToken, 'A');
-    if (!decoded) return next(new AppError('Invalid token. Please log in to get access!', 403));
-    const user = await User.findOne({_id: decoded.id, rTokens: rToken});
-    if (!user) return next(new AppError('Please log in again!', 401));
-    if (user.hasPasswordChangedAfter(decoded.iat)) return next(new AppError('Password has been changed recently! Please log in again!', 401));
-    req.user = user;
+    if (!aToken && !rToken) return next(new AppError('Please log in to get access!', 401));
+    if (!aToken) {
+        const decoded = await verifyToken(rToken, 'R');
+        if (!decoded) return next(new AppError('Invalid token. Please log in to get access!', 403));
+        const updatedAToken = await generateToken({id: decoded.id}, 'A');
+        const updatedRToken = await generateToken({id: decoded.id}, 'R');
+        const filter = {_id: decoded.id, rTokens: rToken};
+        const update = {$set: {'rTokens.$': updatedRToken}};
+        const user = await User.findOneAndUpdate(filter, update);
+        if (!user) return next(new AppError('User belonging to this token was not found. Please log in again', 401));
+        if (user.hasPasswordChangedAfter(decoded.iat)) return next(new AppError('Password has been changed recently! Please log in again!', 401));
+        const aTokenCookieOptions = generateCookieOptions(req, 'A');
+        const rTokenCookieOptions = generateCookieOptions(req, 'R');
+        res.cookie('aToken', updatedAToken, aTokenCookieOptions);
+        res.cookie('rToken', updatedRToken, rTokenCookieOptions);
+        req.user = user;
+    } else {
+        const decoded = await verifyToken(aToken, 'A');
+        if (!decoded) return next(new AppError('Invalid token. Please log in to get access!', 403));
+        console.log(decoded);
+        const user = await User.findById(decoded.id);
+        if (!user) return next(new AppError('User belonging to this token was not found!', 401));
+        if (user.hasPasswordChangedAfter(decoded.iat)) return next(new AppError('Password has been changed recently! Please log in again!', 401));
+        req.user = user;
+    }
     next();
 });
 
@@ -139,7 +157,7 @@ const updateUserRefreshTokens = async (req, res, user) => {
 };
 
 const buildTokens = async (req, res, user) => {
-    const aToken = generateToken({id: user._id, name: user.name}, 'A');
+    const aToken = generateToken({id: user._id}, 'A');
     const rToken = generateToken({id: user._id}, 'R');
     const aTokenCookieOptions = generateCookieOptions(req, 'A');
     const rTokenCookieOptions = generateCookieOptions(req, 'R');

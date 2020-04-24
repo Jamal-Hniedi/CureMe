@@ -35,7 +35,6 @@ exports.createOne = Model =>
         const query = Model.create(body);
         const doc = await query;
         if (!doc) return next(new AppError('No document found with that ID!', 404));
-
         res.status(201).json({
             status: 'success',
             data: {
@@ -55,7 +54,6 @@ exports.updateOne = Model =>
         });
         const doc = await query;
         if (!doc) return next(new AppError('No document found with that ID!', 404));
-
         res.status(200).json({
             status: 'success',
             data: {
@@ -64,14 +62,12 @@ exports.updateOne = Model =>
         })
     });
 
-
 exports.deleteOne = Model =>
     catchAsync(async (req, res, next) => {
         const id = req.params.id;
         const query = Model.findByIdAndDelete(id);
         const doc = await query;
         if (!doc) return next(new AppError('No document found with that ID!', 404));
-
         res.status(204).json({
             status: 'success',
             data: null

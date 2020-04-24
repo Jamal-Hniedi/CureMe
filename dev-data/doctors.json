@@ -1,0 +1,78 @@
+[
+  {
+    "user": "5e9f451af95e542ea0e4d595",
+    "specialty": [
+      "Cardiologist"
+    ],
+    "certificates": [
+      {
+        "title": "Cardiologist certificate",
+        "photo": "some-id-photo.jpg",
+        "link": "http://some-link.com"
+      }
+    ],
+    "presenceLocations": [
+      {
+        "at": "Some hospital",
+        "day": "Everyday",
+        "from": "08:00",
+        "to": "10:00"
+      }
+    ],
+    "clinic": {
+      "location": "Some location",
+      "openTimes": [
+        {
+          "day": "Sunday",
+          "from": "10:00",
+          "to": "02:00"
+        },
+        {
+          "day": "Monday",
+          "from": "10:00",
+          "to": "02:00"
+        }
+      ],
+      "phone": "0999999999"
+    },
+    "phone": "54694236523"
+  },
+  {
+    "user": "5e9f451af95e542ea0e4d596",
+    "specialty": [
+      "Shitiologist"
+    ],
+    "certificates": [
+      {
+        "title": "Shitiologist certificate",
+        "photo": "some-id-photo.jpg",
+        "link": "http://some-link.com"
+      }
+    ],
+    "presenceLocations": [
+      {
+        "at": "Some other hospital",
+        "day": "Everyday",
+        "from": "08:00",
+        "to": "10:00"
+      }
+    ],
+    "clinic": {
+      "location": "Some other location",
+      "openTimes": [
+        {
+          "day": "Sunday",
+          "from": "10:00",
+          "to": "02:00"
+        },
+        {
+          "day": "Monday",
+          "from": "10:00",
+          "to": "02:00"
+        }
+      ],
+      "phone": "0999999999"
+    },
+    "phone": "54694236523"
+  }
+]

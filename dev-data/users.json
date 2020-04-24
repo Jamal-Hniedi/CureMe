@@ -1,0 +1,52 @@
+[
+  {
+    "name": "user1",
+    "email": "user1@cureme.com",
+    "role": "user",
+    "city": "Damascus",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  },
+  {
+    "name": "admin",
+    "email": "admin@cureme.com",
+    "role": "admin",
+    "city": "Another city",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  },
+  {
+    "name": "user2",
+    "email": "user2@cureme.com",
+    "role": "user",
+    "city": "Shit",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  },
+  {
+    "name": "user3",
+    "email": "user3@cureme.com",
+    "role": "user",
+    "city": "Shit",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  },
+  {
+    "_id": "5e9f451af95e542ea0e4d595",
+    "name": "Ab 7adida",
+    "email": "hadida@cureme.com",
+    "city": "Some city",
+    "role": "doctor",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  },
+  {
+    "_id": "5e9f451af95e542ea0e4d596",
+    "name": "Ab Samra",
+    "email": "samra@cureme.com",
+    "city": "Some other city",
+    "role": "doctor",
+    "password": "test1234",
+    "passwordConfirm": "test1234"
+  }
+]

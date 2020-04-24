@@ -2,8 +2,8 @@ require('dotenv').config({path: './config.env'});
 const mongoose = require('mongoose');
 const app = require('./app');
 
-const isDev = process.env.NODE_ENV === 'development';
-const DB = isDev ? process.env.DB_LOCAL : process.env.DB_ONLINE;
+const isOnline = process.env.IS_ONLINE === 'true';
+const DB = isOnline ? process.env.DB_ONLINE : process.env.DB_LOCAL;
 
 process.on('uncaughtException', reason => {
     console.error(reason.name, reason.message);

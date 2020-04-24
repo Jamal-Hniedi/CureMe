@@ -13,9 +13,9 @@ const sendErrorDev = (err, req, res) => {
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
-    if (isDev) {
-        sendErrorDev(err, req, res);
-    } else {
-        // TODO
-    }
+    sendErrorDev(err, req, res);
+    // if (isDev) {
+    // } else {
+    //     // TODO
+    // }
 };
