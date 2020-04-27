@@ -43,8 +43,8 @@ exports.isAuth = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
-        const userRole = req.user.role;
-        if (!roles.includes(userRole)) return next(new AppError('You don\'t have permission to perform this action!', 403));
+        const role = req.user.role;
+        if (!roles.includes(role)) return next(new AppError('You don\'t have permission to perform this action!', 403));
         next();
     };
 };

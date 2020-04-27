@@ -10,7 +10,6 @@ exports.updateDoctor = factory.updateOne(Doctor);
 exports.deleteDoctor = factory.deleteOne(Doctor);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-    console.log(req.user);
     if (req.user.role !== 'doctor') return next();
     const filteredBody = filterObject(req.body, null, ['user', 'fee', 'verified']);
     const user = await Doctor.findOneAndUpdate({user: req.user._id}, filteredBody, {
